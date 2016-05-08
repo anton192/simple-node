@@ -1,8 +1,8 @@
 var assert = require('assert');
-var checkWin = require('../server.js');
+var mult = require('../server.js');
  
-describe('checkWin', function() {
+describe('Mult', function() {
 	it('Simple test', function() {
-		assert.equal(true, true);
+		assert.equal(mult(2, 3), 6);
 	});
 });

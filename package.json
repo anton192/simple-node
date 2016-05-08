@@ -1,0 +1,15 @@
+{
+	"devDependencies": {
+		"express": "*",
+		"crypto": "*",
+	   	"socket.io": "*",
+	   	"redis": "*",
+	   	"bluebird": "*",
+	   	"istanbul": "0.3.5",
+	   	"mocha": "2.0.0",
+	   	"istanbul": "*"
+	 },
+	 "scripts": {
+	   "test": "istanbul cover _mocha -- -R spec ./test/*"
+	 }
+}

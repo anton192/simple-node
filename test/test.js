@@ -32,12 +32,5 @@ describe('Socket', function() {
         done();
     });
 
-    it('Simple', function(done) {
-    	socket.on('message', function (msg) { 
-    		 assert.equal(msg.c, 3);
-    		 done();
-    	});
-    	socket.send({ a: 1, b: 2 });
-    });
 
 });

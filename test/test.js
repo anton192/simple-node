@@ -3,12 +3,17 @@ var DB = require('../server.js');
 var config = require('../config.js');
 var io = require('socket.io-client')
 
+
 describe('Testing DB connection', function() {
+	
+	it('Creating DB', function(done) {
+		DB.execute('CREATE DATABASE paint;', done);
+	});
+
 	it('Creating DB structure', function(done) {
 		DB.create(done);
 	});
 });
-
 
 describe('Testing server', function() {
 
@@ -31,7 +36,6 @@ describe('Testing server', function() {
         });
 	});
 
-
 	afterEach(function(done) {
         if(socket.connected) {
         	if (config.test_log_level >= 1)
@@ -44,8 +48,7 @@ describe('Testing server', function() {
         done();
     });
 
-
-	describe('Testing  session functionality', function() {
+	describe('Testing session functionality', function() {
 
 		it('[getSession] String, 32 sym', function(done) {
 

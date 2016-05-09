@@ -45,7 +45,8 @@ function createDBStructure(done) {
 }
 
 io.sockets.on('connection', function (socket) {
-	console.log('New connection ' + socket.id);
+	if (config.server_log_level >= 1)
+		console.log('New connection ' + socket.id);
 	c.query('USE paint;');
 
 	sessions[socket.id] = crypto.createHash('md5').update(Date.now() + '').digest('hex');
@@ -54,7 +55,8 @@ io.sockets.on('connection', function (socket) {
 
 
 	socket.on('message', function (query) {
-		console.log('New message ' + query.action);
+		if (config.server_log_level >= 2)
+			console.log('New message ' + query.action);
 
 		if (query.action == 'getSession') {
 			if (sessions[socket.id]) {
@@ -101,7 +103,8 @@ io.sockets.on('connection', function (socket) {
 		}
 
 		if (query.action == 'addAction') {
-			console.log(limit[socket.id]);
+			if (config.server_log_level >= 3)
+				console.log(limit[socket.id]);
 			if (limit[socket.id][Nlimit - 1] && Date.now() - limit[socket.id][Nlimit - 1] <= 1000) {
 				socket.json.send({ action: 'addAction', type: 'error', data: { type: 'RateLimit' } });
 			} else {

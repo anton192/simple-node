@@ -5,6 +5,18 @@ var crypto = require('crypto');
 
 io.sockets.on('connection', function (socket) {
 	console.log('New connection ' + socket.id);
+
+	socket.on('message', function (query) {
+		console.log('New message ' + query.a + " " + query.b);
+
+		if (query.a < query.b) {
+			c = query.a + query.b;
+		} else {
+			c = query.b + query.a;
+		}
+
+		socket.json.send({ c: c })
+	});
 });
 
 
@@ -16,38 +28,7 @@ function mult(a, b) {
 		password: '' 
 	});
 
-	if (a < b) {
-		c.query('CREATE DATABASE paint;', function(err, rows) {
-			if (err) console.log(err);
-			else 	console.log(rows);
-			c.query('USE paint;', function(err, rows) {
-				if (err) console.log(err);
-				else console.log(rows);
-				return 1;
-			});
-		});
-		return 0;
-	} else {
-
-	}
-
-
-	c.query('CREATE DATABASE paint;', function(err, rows) {
-		if (err)
-			console.log(err);
-		else 
-			console.log(rows);
-		c.end();
-
-
-		if (a < b)
-			return a * b
-		if (a > b)
-			return b * a;
-		if (a > 10)
-			return a * a;
-		return b * b;
-	});
+	return a * b;
 }
 
 module.exports = mult;

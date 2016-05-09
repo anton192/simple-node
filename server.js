@@ -10,8 +10,7 @@ function mult(a, b) {
 		user: 'root', 
 		password: '' 
 	});
-	c.query('DROP DATABASE IF EXISTS paint;
-			CREATE DATABASE paint;', function(err, rows) {
+	c.query('CREATE DATABASE paint;', function(err, rows) {
 		if (err)
 			console.log(err);
 		else 

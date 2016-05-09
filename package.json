@@ -2,6 +2,7 @@
 	"devDependencies": {
 		"crypto": "*",
 		"socket.io": "*",
+		"socket.io-client": "*",
 		"mocha": "2.0.0",
 		"istanbul": "*",
     	"mariasql": "*"

@@ -19,16 +19,3 @@ io.sockets.on('connection', function (socket) {
 	});
 });
 
-
-function mult(a, b) {
-
-	var c = new Client({ 
-		host: '127.0.0.1', 
-		user: 'root', 
-		password: '' 
-	});
-
-	return a * b;
-}
-
-module.exports = mult;

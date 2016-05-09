@@ -2,12 +2,10 @@ TN:
 SF:/media/sf_classes/sem 8/simple-node/server.js
 FN:6,(anonymous_1)
 FN:9,(anonymous_2)
-FN:23,mult
-FNF:3
-FNH:3
+FNF:2
+FNH:2
 FNDA:1,(anonymous_1)
 FNDA:1,(anonymous_2)
-FNDA:1,mult
 DA:2,1
 DA:3,1
 DA:4,1
@@ -19,12 +17,8 @@ DA:12,1
 DA:13,1
 DA:15,0
 DA:18,1
-DA:23,1
-DA:25,1
-DA:31,1
-DA:34,1
-LF:15
-LH:14
+LF:11
+LH:10
 BRDA:12,1,0,1
 BRDA:12,1,1,0
 BRF:2

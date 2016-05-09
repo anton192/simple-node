@@ -1,4 +1,8 @@
 
+var io = require('socket.io').listen(8081); 
+var Client = require('mariasql');
+var crypto = require('crypto');
+
 function mult(a, b) {
 	if (a < b)
 		return a * b

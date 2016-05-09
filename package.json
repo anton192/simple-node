@@ -1,12 +1,12 @@
- {
+{
 	"devDependencies": {
 		"crypto": "*",
-	   	"socket.io": "*",
-	   	"mocha": "2.0.0",
-	   	"istanbul": "*",
-    	"mariasql": "^0.2.6"
-	 },
-	 "scripts": {
-	   "test": "istanbul cover _mocha -- -R spec ./test/*"
-	 }
+		"socket.io": "*",
+		"mocha": "2.0.0",
+		"istanbul": "*",
+		"mariasql": "*"
+	},
+	"scripts": {
+		"test": "istanbul cover _mocha -- -R spec ./test/*"
+	}
 }

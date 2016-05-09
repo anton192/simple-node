@@ -6,7 +6,7 @@ var crypto = require('crypto');
 var c = new Client({ 
 	host: '127.0.0.1', 
 	user: 'root', 
-	password: 'root' 
+	password: '' 
 });
 
 var sessions = [];
@@ -17,8 +17,23 @@ function createDBStructure(done) {
 	c.query('DROP DATABASE IF EXISTS paint;', function(err, rows) {
 		c.query('CREATE DATABASE paint;', function(err, rows) {
 			c.query('USE paint;', function(err, rows) {
-				c.query('CREATE TABLE sessions( id INT(5) NOT NULL AUTO_INCREMENT, code VARCHAR(128), begin DATETIME, PRIMARY KEY(id) );', function(err, rows) {
-					c.query('CREATE TABLE actions( id INT(5) NOT NULL AUTO_INCREMENT, object VARCHAR(1024), session VARCHAR(128), xMin DOUBLE, xMax DOUBLE, yMin DOUBLE, yMAX DOUBLE, time DOUBLE, PRIMARY KEY(id) );', function(err, rows) {
+				c.query('CREATE TABLE sessions(' +
+							'id INT(5) NOT NULL AUTO_INCREMENT,' +
+							'code VARCHAR(128),' +
+							'begin DATETIME,' +
+							'PRIMARY KEY(id)' +
+						');', function(err, rows) {
+					c.query('CREATE TABLE actions(' +
+								'id INT(5) NOT NULL AUTO_INCREMENT,' +
+								'object VARCHAR(1024),' +
+								'session VARCHAR(128),' +
+								'xMin DOUBLE,' +
+								'xMax DOUBLE,' +
+								'yMin DOUBLE,' +
+								'yMAX DOUBLE,' +
+								'time DOUBLE,' +
+								'PRIMARY KEY(id)' + 
+							');', function(err, rows) {
 						done();
 					});
 				});

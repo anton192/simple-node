@@ -1,2 +1,0 @@
-[![codecov](https://codecov.io/gh/OurDuty/Node.js-sem/branch/master/graph/badge.svg)](https://codecov.io/gh/OurDuty/Node.js-sem)
-[![Build Status](https://travis-ci.org/OurDuty/Node.js-sem.svg?branch=master)](https://travis-ci.org/OurDuty/Node.js-sem)

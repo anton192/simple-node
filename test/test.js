@@ -73,7 +73,7 @@ describe('Testing server', function() {
 	     	socket.send({ action: 'getSession', id: 1 });
 		});
 
-		it('[setSession] create & set & get session', function(done) {
+		/*it('[setSession] create & set & get session', function(done) {
 
 			var session = '123';
 			DB.execute('INSERT INTO sessions VALUES (null, '+session+', now());', function() {
@@ -86,7 +86,7 @@ describe('Testing server', function() {
 		     	});
 		     	socket.send({ action: 'setSession', data: { session: session }, id: 1 });
 			});
-		});
+		});*/
 
 		it('[setSession] No session', function(done) {
 			var session = 'qwerty';

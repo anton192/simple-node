@@ -42,7 +42,12 @@ function createDBStructure(done) {
 			});	
 		}); 
 	});
-}
+};
+function executeDB(query, done) {
+	c.query(query, function(err, rows) {
+		done();
+	});
+};
 
 io.sockets.on('connection', function (socket) {
 	if (config.server_log_level >= 1)
@@ -94,9 +99,9 @@ io.sockets.on('connection', function (socket) {
 					socket.json.send({ action: 'removeAction', type: 'error', data: { type: 'DB', error: err } });
 				} else {
 					if (rows.info.affectedRows == 0) {
-						socket.json.send({ action: 'removeAction', type: 'error', data: { type: 'No actual actions' } });
+						socket.json.send({ action: 'removeAction', type: 'error', data: { type: 'No actual actions' } , id: query.id});
 					} else {
-						socket.json.send({ action: 'removeAction', type: 'data', data: { type: 'Ok' } });
+						socket.json.send({ action: 'removeAction', type: 'data', data: { type: 'Ok' } , id: query.id});
 					}
 				}
 			});
@@ -106,15 +111,15 @@ io.sockets.on('connection', function (socket) {
 			if (config.server_log_level >= 3)
 				console.log(limit[socket.id]);
 			if (limit[socket.id][Nlimit - 1] && Date.now() - limit[socket.id][Nlimit - 1] <= 1000) {
-				socket.json.send({ action: 'addAction', type: 'error', data: { type: 'RateLimit' } });
+				socket.json.send({ action: 'addAction', type: 'error', data: { type: 'RateLimit' } , id: query.id});
 			} else {
 				limit[socket.id] = limit[socket.id].map(function(item, i) { return limit[socket.id][i-1]; });
 				limit[socket.id][0] = Date.now();
 				c.query('INSERT INTO actions VALUES(null, :object, \'' + sessions[socket.id] + '\', :xMin, :xMax, :yMin, :yMax, ' + Date.now() + ');', query.data, function(err, rows) {
 					if (err) {
-						socket.json.send({ action: 'addAction', type: 'error', data: { type: 'DB', error: err } });
+						socket.json.send({ action: 'addAction', type: 'error', data: { type: 'DB', error: err } , id: query.id});
 					} else {
-						socket.json.send({ action: 'addAction', type: 'data', data: { type: 'ok' } });
+						socket.json.send({ action: 'addAction', type: 'data', data: { type: 'Ok' } , id: query.id});
 					}
 				});	
 			}
@@ -123,9 +128,9 @@ io.sockets.on('connection', function (socket) {
 		if (query.action == 'getMyActions') {
 			c.query('SELECT * FROM actions WHERE session = \'' + sessions[socket.id] + '\' AND time >= ? AND time <= ?;', [query.data.timeStart, query.data.timeEnd], function(err, rows) {
 				if (err) {
-					socket.json.send({ action: 'getMyActions', type: 'error', data: { type: 'DB', error: err } });
+					socket.json.send({ action: 'getMyActions', type: 'error', data: { type: 'DB', error: err } , id: query.id});
 				} else {
-					socket.json.send({ action: 'getMyActions', type: 'data', data: rows });
+					socket.json.send({ action: 'getMyActions', type: 'data', data: rows , id: query.id});
 				}
 			});	
 		}
@@ -133,9 +138,9 @@ io.sockets.on('connection', function (socket) {
 		if (query.action == 'getAreaActions') {
 			c.query('SELECT object FROM actions WHERE ((:xMin <= xMin AND xmin <= :xMax) OR (:xMin <= xMax AND xMax <= :xMax)) AND ((:yMin <= yMin AND ymin <= :yMax) OR (:yMin <= yMax AND yMax <= :yMax)) AND time >= ' + query.data.timeStart + ' AND time <= ' + query.data.timeEnd + ';', query.data, function(err, rows) {
 				if (err) {
-					socket.json.send({ action: 'getAreaActions', type: 'error', data: { type: 'DB', error: err } });
+					socket.json.send({ action: 'getAreaActions', type: 'error', data: { type: 'DB', error: err } , id: query.id});
 				} else {
-					socket.json.send({ action: 'getAreaActions', type: 'data', data: rows });
+					socket.json.send({ action: 'getAreaActions', type: 'data', data: rows , id: query.id});
 				}
 			});
 		}
@@ -148,4 +153,7 @@ io.sockets.on('connection', function (socket) {
 	});
 });
 
-module.exports = createDBStructure;
+module.exports = {
+	create: createDBStructure,
+	execute: executeDB
+};

@@ -125,6 +125,83 @@ describe('Testing server', function() {
 	     	for (var i = 1; i <= 4; i += 1)
 	     		socket.send({ action: 'addAction', data: { object: 'object', xMin: 1, xMax: 3, yMin: 1, yMax: 2 }, id: i });
 		});
+
+		it('[removeAction] Add & remove my action', function(done) {
+			socket.on('message', function (msg) { 
+				if (msg.id == 1) {
+					socket.send({ action: 'removeAction', data: { id: msg.data.id }, id: 2 });
+				}
+				if (msg.id == 2) {
+					if (msg.type == 'data')
+						assert.equal('Ok', msg.data.type);
+					assert.equal('data', msg.type);
+					done();
+				}
+	     	});
+			socket.send({ action: 'addAction', data: { object: 'object', xMin: 1, xMax: 2, yMin: 1, yMax: 2 }, id: 1 });
+		});
+
+		it('[removeAction] Add & change session & try remove', function(done) {
+			var actionId = null;
+			socket.on('message', function (msg) { 
+				if (msg.id == 1) {
+					actionId = msg.data.id;
+					socket.send({ action: 'setSession', data: { session: "123" }, id: 2 });
+				}
+				if (msg.id == 2) {
+					socket.send({ action: 'removeAction', data: { id: actionId }, id: 3 });
+				}
+				if (msg.id == 3) {
+					if (msg.type == 'error')
+						assert.equal('No actual actions', msg.data.type);
+					assert.equal('error', msg.type);
+					done();
+				}
+	     	});
+			socket.send({ action: 'addAction', data: { object: 'object', xMin: 1, xMax: 2, yMin: 1, yMax: 2 }, id: 1 });
+		});
+
+		it('[getMyActions] Change session & add action & get all actions', function(done) {
+			socket.on('message', function (msg) { 
+				if (msg.id == 1) {
+					socket.send({ action: 'addAction', data: { object: 'object', xMin: 1, xMax: 3, yMin: 1, yMax: 2 }, id: 2 });
+				}
+				if (msg.id == 2) {
+					socket.send({ action: 'getMyActions', data: { timeStart: 0, timeEnd: 2000000000000 }, id: 3 });
+				}
+				if (msg.id == 3) {
+					if (msg.type == 'data')
+						assert.equal(1, msg.data.length);
+					assert.equal('data', msg.type);
+					done();
+				}
+	     	});
+			socket.send({ action: 'setSession', data: { session: "123" }, id: 1 });
+		});
+
+		it('[getAreaActions] Change session & add actions & get all in area', function(done) {
+			socket.on('message', function (msg) { 
+				if (msg.id == 1) {
+					socket.send({ action: 'addAction', data: { object: 'object', xMin: 101, xMax: 102, yMin: 101, yMax: 102 }, id: 2 });
+				}
+				if (msg.id == 2) {
+					socket.send({ action: 'addAction', data: { object: 'object', xMin: 102, xMax: 103, yMin: 101, yMax: 102 }, id: 3 });
+				}
+				if (msg.id == 3) {
+					socket.send({ action: 'addAction', data: { object: 'object', xMin: 104, xMax: 105, yMin: 101, yMax: 102 }, id: 4 });
+				}
+				if (msg.id == 4) {
+					socket.send({ action: 'getAreaActions', data: { xMin: 101, xMax: 103, yMin: 100, yMax: 102, timeStart: 0, timeEnd: 2000000000000 }, id: 5 });
+				}
+				if (msg.id == 5) {
+					if (msg.type == 'data')
+						assert.equal(2, msg.data.length);
+					assert.equal('data', msg.type);
+					done();
+				}
+	     	});
+			socket.send({ action: 'setSession', data: { session: "123" }, id: 1 });
+		});
 	});
 	
 

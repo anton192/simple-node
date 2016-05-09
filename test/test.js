@@ -1,6 +1,13 @@
 var assert = require('assert');;
-require('../server.js');
+var createDBStructure = require('../server.js');
 var io = require('socket.io-client')
+
+describe('Testing DB connection', function() {
+	it('Creating DB structure', function(done) {
+		createDBStructure(done);
+	});
+});
+
 
 describe('Socket', function() {
 

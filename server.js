@@ -16,15 +16,16 @@ function mult(a, b) {
 		else 
 			console.log(rows);
 		c.end();
-	});
+		
 
-	if (a < b)
-		return a * b
-	if (a > b)
-		return b * a;
-	if (a > 10)
-		return a * a;
-	return b * b;
+		if (a < b)
+			return a * b
+		if (a > b)
+			return b * a;
+		if (a > 10)
+			return a * a;
+		return b * b;
+	});
 }
 
 module.exports = mult;

@@ -4,6 +4,11 @@ var Client = require('mariasql');
 var crypto = require('crypto');
 var config = require('./config.js');
 
+Client.prototype.end = function() {
+	this._reusableAfterClose = false;
+	this._closeOnEmpty = true;
+};
+
 var c = new Client({ 
 	host: config.host,
 	user: config.user,

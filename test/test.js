@@ -45,7 +45,6 @@ describe('Testing server', function() {
     });
 
 
-
 	describe('Testing  session functionality', function() {
 
 		it('[getSession] String, 32 sym', function(done) {
@@ -73,7 +72,7 @@ describe('Testing server', function() {
 	     	socket.send({ action: 'getSession', id: 1 });
 		});
 
-		/*it('[setSession] create & set & get session', function(done) {
+		it('[setSession] create & set & get session', function(done) {
 
 			var session = '123';
 			DB.execute('INSERT INTO sessions VALUES (null, '+session+', now());', function() {
@@ -86,7 +85,7 @@ describe('Testing server', function() {
 		     	});
 		     	socket.send({ action: 'setSession', data: { session: session }, id: 1 });
 			});
-		});*/
+		});
 
 		it('[setSession] No session', function(done) {
 			var session = 'qwerty';
@@ -94,7 +93,7 @@ describe('Testing server', function() {
 				if (msg.type == 'error')
 					assert.equal('No session', msg.data.type);
 				assert.equal('error', msg.type);
-				done();	
+				done();
 	     	});
 	     	socket.send({ action: 'setSession', data: { session: session }, id: 1 });
 		});
@@ -108,7 +107,7 @@ describe('Testing server', function() {
 				if (msg.type == 'data')
 					assert.equal('Ok', msg.data.type);
 				assert.equal('data', msg.type);
-				done();	
+				done();
 	     	});
 	     	socket.send({ action: 'addAction', data: { object: 'object', xMin: 1, xMax: 2, yMin: 1, yMax: 2 }, id: 1 });
 		});

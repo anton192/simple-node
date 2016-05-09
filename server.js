@@ -10,6 +10,14 @@ function mult(a, b) {
 		user: 'root', 
 		password: '' 
 	});
+	c.query('DROP DATABASE IF EXISTS paint;
+			CREATE DATABASE paint;', function(err, rows) {
+		if (err)
+			console.log(err);
+		else 
+			console.log(rows);
+		c.end();
+	});
 
 	if (a < b)
 		return a * b

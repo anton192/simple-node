@@ -2,12 +2,14 @@
 var io = require('socket.io').listen(8081); 
 var Client = require('mariasql');
 var crypto = require('crypto');
+var config = require('./config.js');
 
 var c = new Client({ 
-	host: '127.0.0.1', 
-	user: 'root', 
-	password: '' 
+	host: config.host,
+	user: config.user,
+	password: config.password
 });
+
 
 var sessions = [];
 var Nlimit = 3; // operations in second

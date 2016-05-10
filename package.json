@@ -5,7 +5,8 @@
 		"socket.io-client": "*",
 		"mocha": "2.0.0",
 		"istanbul": "*",
-    	"mariasql": "*"
+    	"mariasql": "*",
+    	"bluebird": "*"
 	},
 	"scripts": {
 		"test": "istanbul cover _mocha -- -R spec ./test/*"

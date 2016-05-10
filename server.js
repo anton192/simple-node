@@ -23,43 +23,30 @@ var sessions = [];
 var Nlimit = 3; // operations in second
 var limit = [];
 
-function createDBStructure() {
+function createDBStructure(done) {
 	c.queryAsync('DROP DATABASE IF EXISTS paint;')
-		.then(() => c.queryAsync('CREATE DATABASE paint;'))
-		.then(() => c.queryAsync('USE paint;'))
-		.then(() => c.queryAsync('CREATE DATABASE paint;'))
-		.then(() => c.queryAsync('CREATE DATABASE paint;'))
+		.then(function() { c.queryAsync('CREATE DATABASE paint;'); })
+		.then(function() { c.queryAsync('USE paint;'); })
+		.then(function() { c.queryAsync('CREATE TABLE sessions(' +
+											'id INT(5) NOT NULL AUTO_INCREMENT,' +
+											'code VARCHAR(128),' +
+											'begin DATETIME,' +
+											'PRIMARY KEY(id)' +
+										');'); })
+		.then(function() { c.queryAsync('CREATE TABLE actions(' +
+											'id INT(5) NOT NULL AUTO_INCREMENT,' +
+											'object VARCHAR(1024),' +
+											'session VARCHAR(128),' +
+											'xMin DOUBLE,' +
+											'xMax DOUBLE,' +
+											'yMin DOUBLE,' +
+											'yMAX DOUBLE,' +
+											'time DOUBLE,' +
+											'PRIMARY KEY(id)' + 
+										');'); })
 		.then(done);
-}
-
-		.then(done);
-
-		, function(err, rows) {
-			c.query('USE paint;', function(err, rows) {
-				c.query('CREATE TABLE sessions(' +
-							'id INT(5) NOT NULL AUTO_INCREMENT,' +
-							'code VARCHAR(128),' +
-							'begin DATETIME,' +
-							'PRIMARY KEY(id)' +
-						');', function(err, rows) {
-					c.query('CREATE TABLE actions(' +
-								'id INT(5) NOT NULL AUTO_INCREMENT,' +
-								'object VARCHAR(1024),' +
-								'session VARCHAR(128),' +
-								'xMin DOUBLE,' +
-								'xMax DOUBLE,' +
-								'yMin DOUBLE,' +
-								'yMAX DOUBLE,' +
-								'time DOUBLE,' +
-								'PRIMARY KEY(id)' + 
-							');', function(err, rows) {
-						done();
-					});
-				});
-			});	
-		}); 
-	});
 };
+
 function executeDB(query, done) {
 	c.query(query, function(err, rows) {
 		done();

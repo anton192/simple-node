@@ -3,6 +3,7 @@ var io = require('socket.io').listen(8081);
 var Client = require('mariasql');
 var crypto = require('crypto');
 var config = require('./config.js');
+var Promise = require('bluebird');
 
 Client.prototype.end = function() {
 	this._reusableAfterClose = false;
@@ -15,14 +16,25 @@ var c = new Client({
 	password: config.password
 });
 
+Promise.promisifyAll(c);
+
 
 var sessions = [];
 var Nlimit = 3; // operations in second
 var limit = [];
 
-function createDBStructure(done) {
-	c.query('DROP DATABASE IF EXISTS paint;', function(err, rows) {
-		c.query('CREATE DATABASE paint;', function(err, rows) {
+function createDBStructure() {
+	c.queryAsync('DROP DATABASE IF EXISTS paint;')
+		.then(() => c.query('CREATE DATABASE paint;'))
+		.then(() => c.queryAsync('USE paint;'))
+		.then(() => c.queryAsync('CREATE DATABASE paint;'))
+		.then(() => c.queryAsync('CREATE DATABASE paint;'))
+		.then(done);
+}
+
+		.then(done);
+
+		, function(err, rows) {
 			c.query('USE paint;', function(err, rows) {
 				c.query('CREATE TABLE sessions(' +
 							'id INT(5) NOT NULL AUTO_INCREMENT,' +

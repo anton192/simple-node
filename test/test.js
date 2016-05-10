@@ -78,7 +78,7 @@ describe('Testing server', function() {
 		it('[setSession] create & set & get session', function(done) {
 
 			var session = '123';
-			DB.execute('INSERT INTO sessions VALUES (null, '+session+', now());', function() {
+			DB.execute('INSERT INTO sessions VALUES (null, "123", now());', function() {
 				socket.on('message', function (msg) { 
 					socket.on('message', function (msg) { 
 						assert.equal(session, msg.data.session);
@@ -86,7 +86,7 @@ describe('Testing server', function() {
 			     	});
 			     	socket.send({ action: 'getSession', id: 2 });
 		     	});
-		     	socket.send({ action: 'setSession', data: { session: session }, id: 1 });
+		     	socket.send({ action: 'setSession', data: { session: '123' }, id: 1 });
 			});
 		});
 
@@ -105,7 +105,7 @@ describe('Testing server', function() {
 
 	describe('Testing action functionality', function() {
 
-		it('[aetAction] Simply adding action', function(done) {
+		it('[addAction] Simply adding action', function(done) {
 			socket.on('message', function (msg) { 
 				if (msg.type == 'data')
 					assert.equal('Ok', msg.data.type);

@@ -59,7 +59,7 @@ io.sockets.on('connection', function (socket) {
 	c.query('USE paint;');
 
 	sessions[socket.id] = crypto.createHash('md5').update(Date.now() + '').digest('hex');
-	c.query('INSERT INTO sessions VALUES (null, \'' + sessions[socket.id] + '\', now());');
+	c.query('INSERT INTO sessions VALUES (null, ?, now());', [sessions[socket.id]]);
 	limit[socket.id] = Array(Nlimit + 1).join('0').split('');
 
 
@@ -72,7 +72,7 @@ io.sockets.on('connection', function (socket) {
 				socket.json.send({ action: 'getSession', type: 'data', data: { session: sessions[socket.id] }, id: query.id });
 			} else {
 				sessions[socket.id] = crypto.createHash('md5').update(Date.now() + '').digest('hex');
-				c.query('INSERT INTO sessions VALUES (null, \'' + sessions[socket.id] + '\', now());', function(err, rows) {
+				c.query('INSERT INTO sessions VALUES (null, ?, now());', [sessions[socket.id]], function(err, rows) {
 					if (err) {
 						socket.json.send({ action: 'getSession', type: 'error', data: { type: 'DB', error: err }, id: query.id });	
 					} else {
@@ -83,7 +83,7 @@ io.sockets.on('connection', function (socket) {
 		}
 
 		if (query.action == 'setSession') {
-			c.query('SELECT COUNT(*) as count FROM sessions WHERE code = \'' + query.data.session + '\';', function (err, rows) {
+			c.query('SELECT COUNT(*) as count FROM sessions WHERE code = ?;', [query.data.session], function (err, rows) {
 				if (err) {
 					socket.json.send({ action: 'setSession', type: 'error', data: { type: 'DB', error: err }, id: query.id });
 				} else {
@@ -98,7 +98,7 @@ io.sockets.on('connection', function (socket) {
 		} 
 
 		if (query.action == 'removeAction') {
-			c.query('DELETE FROM actions WHERE id = ' + query.data.id + ' AND session = \'' + sessions[socket.id] + '\';', function(err, rows) {
+			c.query('DELETE FROM actions WHERE id = ? AND session = ?;', [query.data.id, sessions[socket.id]], function(err, rows) {
 				if (err) {
 					socket.json.send({ action: 'removeAction', type: 'error', data: { type: 'DB', error: err }, id: query.id });
 				} else {
@@ -119,7 +119,9 @@ io.sockets.on('connection', function (socket) {
 			} else {
 				limit[socket.id] = limit[socket.id].map(function(item, i) { return limit[socket.id][i-1]; });
 				limit[socket.id][0] = Date.now();
-				c.query('INSERT INTO actions VALUES(null, :object, \'' + sessions[socket.id] + '\', :xMin, :xMax, :yMin, :yMax, ' + Date.now() + ');', query.data, function(err, rows) {
+				query.data.session = sessions[socket.id];
+				query.data.now = Date.now();
+				c.query('INSERT INTO actions VALUES(null, :object, :session, :xMin, :xMax, :yMin, :yMax, :now);', query.data, function(err, rows) {
 					if (err) {
 						socket.json.send({ action: 'addAction', type: 'error', data: { type: 'DB', error: err } , id: query.id});
 					} else {
@@ -130,7 +132,7 @@ io.sockets.on('connection', function (socket) {
 		}
 
 		if (query.action == 'getMyActions') {
-			c.query('SELECT * FROM actions WHERE session = \'' + sessions[socket.id] + '\' AND time >= ? AND time <= ?;', [query.data.timeStart, query.data.timeEnd], function(err, rows) {
+			c.query('SELECT * FROM actions WHERE session = ? AND time >= ? AND time <= ?;', [sessions[socket.id], query.data.timeStart, query.data.timeEnd], function(err, rows) {
 				if (err) {
 					socket.json.send({ action: 'getMyActions', type: 'error', data: { type: 'DB', error: err } , id: query.id});
 				} else {
@@ -140,7 +142,9 @@ io.sockets.on('connection', function (socket) {
 		}
 
 		if (query.action == 'getAreaActions') {
-			c.query('SELECT object FROM actions WHERE ((:xMin <= xMin AND xmin <= :xMax) OR (:xMin <= xMax AND xMax <= :xMax)) AND ((:yMin <= yMin AND ymin <= :yMax) OR (:yMin <= yMax AND yMax <= :yMax)) AND time >= ' + query.data.timeStart + ' AND time <= ' + query.data.timeEnd + ';', query.data, function(err, rows) {
+			query.data.start = query.data.timeStart;
+			query.data.end = query.data.timeEnd;
+			c.query('SELECT object FROM actions WHERE ((:xMin <= xMin AND xmin <= :xMax) OR (:xMin <= xMax AND xMax <= :xMax)) AND ((:yMin <= yMin AND ymin <= :yMax) OR (:yMin <= yMax AND yMax <= :yMax)) AND time >= :start AND time <= :end;', query.data, function(err, rows) {
 				if (err) {
 					socket.json.send({ action: 'getAreaActions', type: 'error', data: { type: 'DB', error: err } , id: query.id});
 				} else {

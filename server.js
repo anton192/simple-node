@@ -25,7 +25,7 @@ var limit = [];
 
 function createDBStructure() {
 	c.queryAsync('DROP DATABASE IF EXISTS paint;')
-		.then(() => c.query('CREATE DATABASE paint;'))
+		.then(() => c.queryAsync('CREATE DATABASE paint;'))
 		.then(() => c.queryAsync('USE paint;'))
 		.then(() => c.queryAsync('CREATE DATABASE paint;'))
 		.then(() => c.queryAsync('CREATE DATABASE paint;'))
